@@ -267,9 +267,27 @@ describe("Throwing balls at trainers", () => {
     await runPokeballTest(game, PokeballType.MASTER_BALL, "success");
   });
 
+  it("capturing a trainer pokemon should not end the battle when reserves remain", async () => {
+    game.override.startingWave(195).startingBiome(BiomeId.END);
+    await game.classicMode.startBattle(SpeciesId.MAGIKARP);
+
+    game.scene.pokeballCounts[PokeballType.MASTER_BALL] = 1;
+    game.doThrowPokeball(PokeballType.MASTER_BALL);
+
+    if (game.isCurrentPhase("CommandPhase")) {
+      game.move.select(MoveId.SPLASH);
+    }
+
+    await game.toEndOfTurn();
+    await game.toNextTurn();
+
+    expect(game.scene.currentBattle.battleType).toBe(BattleType.TRAINER);
+    expect(game.scene.getEnemyField().some(p => p.isActive(true))).toBe(true);
+  });
+
   it("throwing ball at a trainer in a double battle", async () => {
     game.override.startingWave(21).randomTrainer({ trainerType: TrainerType.TWINS });
-    await runPokeballTest(game, PokeballType.MASTER_BALL, "battle:noPokeballTrainer");
+    await runPokeballTest(game, PokeballType.MASTER_BALL, "battle:noPokeballMulti");
   });
 
   it("throwing ball at a trainer in the end biome", async () => {

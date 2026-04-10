@@ -12,10 +12,13 @@ import {
   getPokeballTintColor,
 } from "#data/pokeball";
 import { getStatusEffectCatchRateMultiplier } from "#data/status-effect";
+import { BattleType } from "#enums/battle-type";
 import { BattlerIndex } from "#enums/battler-index";
 import { ChallengeType } from "#enums/challenge-type";
 import type { PokeballType } from "#enums/pokeball";
 import { StatusEffect } from "#enums/status-effect";
+import { SwitchType } from "#enums/switch-type";
+import { TrainerSlot } from "#enums/trainer-slot";
 import { UiMode } from "#enums/ui-mode";
 import type { EnemyPokemon } from "#field/pokemon";
 import { PokemonHeldItemModifier } from "#modifiers/modifier";
@@ -279,6 +282,20 @@ export class AttemptCapturePhase extends PokemonPhase {
       () => {
         const end = () => {
           globalScene.phaseManager.unshiftNew("VictoryPhase", this.battlerIndex);
+          if ([BattleType.TRAINER, BattleType.MYSTERY_ENCOUNTER].includes(globalScene.currentBattle.battleType)) {
+            const summonSlot = this.fieldIndex ? TrainerSlot.TRAINER_PARTNER : TrainerSlot.TRAINER;
+            const nextSummonIndex = globalScene.currentBattle.trainer?.getNextSummonIndex(summonSlot) ?? -1;
+            if (nextSummonIndex > -1) {
+              globalScene.phaseManager.pushNew(
+                "SwitchSummonPhase",
+                SwitchType.SWITCH,
+                this.fieldIndex,
+                nextSummonIndex,
+                false,
+                false,
+              );
+            }
+          }
           globalScene.pokemonInfoContainer.hide();
           this.removePb();
           this.end();
