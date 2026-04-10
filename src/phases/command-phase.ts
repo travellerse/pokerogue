@@ -342,7 +342,6 @@ export class CommandPhase extends FieldPhase {
    *
    * @remarks
    * The pokeball may not be thrown if any of the following are true:
-   * - It is a trainer battle
    * - The player is in the {@linkcode BiomeId.END | End} biome and
    *   - it is not classic mode; or
    *   - the player has not caught the target before and the player is still missing more than one starter
@@ -385,8 +384,6 @@ export class CommandPhase extends FieldPhase {
       } else {
         return true;
       }
-    } else if (battleType === BattleType.TRAINER) {
-      this.queueShowText("battle:noPokeballTrainer");
     } else if (currentBattle.isBattleMysteryEncounter() && !currentBattle.mysteryEncounter!.catchAllowed) {
       this.queueShowText("battle:noPokeballMysteryEncounter");
     } else {

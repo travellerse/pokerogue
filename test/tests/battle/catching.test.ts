@@ -264,7 +264,7 @@ describe("Throwing balls at trainers", () => {
 
   it("throwing ball at a trainer", async () => {
     game.override.startingWave(21);
-    await runPokeballTest(game, PokeballType.MASTER_BALL, "battle:noPokeballTrainer");
+    await runPokeballTest(game, PokeballType.MASTER_BALL, "success");
   });
 
   it("throwing ball at a trainer in a double battle", async () => {
@@ -274,6 +274,6 @@ describe("Throwing balls at trainers", () => {
 
   it("throwing ball at a trainer in the end biome", async () => {
     game.override.startingWave(195).startingBiome(BiomeId.END);
-    await runPokeballTest(game, PokeballType.MASTER_BALL, "battle:noPokeballTrainer");
+    await runPokeballTest(game, PokeballType.MASTER_BALL, "success");
   });
 });
